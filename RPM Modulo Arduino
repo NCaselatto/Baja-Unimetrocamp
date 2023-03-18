@@ -1,0 +1,51 @@
+#define   vcc      5
+#define   gnd      4
+#define   pino_D0  3
+#define   analog   2 //Não Utilizado
+
+ int           rpm;
+volatile byte pulsos;
+unsigned long timeold;
+
+
+unsigned int pulsos_por_volta = 20; //alterar pela quantidade de furos do disco encoder
+
+void contador()
+{
+  pulsos++;
+}
+
+void setup()
+{
+  Serial.begin(115200);
+
+  pinMode(vcc,    OUTPUT);
+  pinMode(gnd,    OUTPUT);
+  pinMode(pino_D0, INPUT);
+  pinMode(analog,  INPUT); //Não Utilizado
+
+  digitalWrite(vcc, HIGH);
+  digitalWrite(gnd,  LOW);
+ 
+  attachInterrupt(1, contador, FALLING);
+  pulsos = 0;
+  rpm = 0;
+  timeold = 0;
+  
+}
+
+void loop()
+{
+  if (millis() - timeold >= 1000)
+  {
+    detachInterrupt(1);
+    rpm = (60 * 1000 / pulsos_por_volta ) / (millis() - timeold) * pulsos;
+    timeold = millis();
+    pulsos = 0;
+
+    Serial.print("RPM = ");
+    Serial.println(rpm, DEC);
+    attachInterrupt(1, contador, FALLING);
+  }
+  
+}
