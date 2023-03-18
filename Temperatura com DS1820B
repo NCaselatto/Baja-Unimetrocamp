@@ -1,0 +1,24 @@
+#include <OneWire.h> 
+#include <DallasTemperature.h>
+
+#define DS18B20 3 //Seta o pino do arduino a ler o sensor
+
+OneWire ourWire(DS18B20);
+DallasTemperature sensors(&ourWire);
+
+void setup() {
+  Serial.begin(115200);
+  sensors.begin();
+  delay(1000);
+}
+
+void loop() {
+
+  analogWrite(8, map(sensors.getTempCByIndex(0), 4, 30, 0, 255)); //mapeia a temperatura com o sinal pwm 
+  
+  sensors.requestTemperatures();
+  Serial.print("Temperatura: ");
+  Serial.print(sensors.getTempCByIndex(0));
+  Serial.println("ºC");
+  delay(250);
+}
