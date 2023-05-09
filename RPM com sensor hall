@@ -8,10 +8,9 @@ const byte PulsesPerRevolution = 1;  // Quantidade de pulsos em cada revolução
 const unsigned long ZeroTimeout = 300000;  // Para respostas rapidas, um bom valor seria 100000.
                                            // Para leituras de baixa RPM, um bom valor seria 300000.
 
-// Calibration for smoothing RPM:
-const byte numReadings = 2;  // Number of samples for smoothing. The higher, the more smoothing, but it's going to
-                             // react slower to changes. 1 = no smoothing. Default: 2.
-
+// Calibração para alisamento de RPM:
+const byte numReadings = 2;  //Número de amostras para alisamento. Quanto mais alto, mais suavização, mas vai
+                             //reagir mais devagar a mudanças. 1 = alisamento. Padrão: 2.
 
 /////////////
 // Variaveis:
@@ -34,13 +33,11 @@ unsigned long readIndex;
 unsigned long total;  
 unsigned long average;  
 
-
 void setup(){
   Serial.begin(9600); 
   attachInterrupt(digitalPinToInterrupt(2), Pulse_Event, RISING);  
   delay(1000);  
-} 
-
+}
 
 void loop(){
   LastTimeCycleMeasure = LastTimeWeMeasured; 
@@ -53,8 +50,8 @@ void loop(){
   FrequencyRaw = 10000000000 / PeriodAverage; 
   
   if(PeriodBetweenPulses > ZeroTimeout - ZeroDebouncingExtra || CurrentMicros - LastTimeCycleMeasure > ZeroTimeout - ZeroDebouncingExtra){  
-    FrequencyRaw = 0;  // Set frequency as 0.
-    ZeroDebouncingExtra = 2000;  // Change the threshold a little so it doesn't bounce.
+    FrequencyRaw = 0;            // Seta a frêquencia em 0.
+    ZeroDebouncingExtra = 2000;  // Altera um pouco o limite para que não oscile.
   }
   else{
     ZeroDebouncingExtra = 0; 
@@ -67,15 +64,15 @@ void loop(){
   RPM = RPM / 10000; 
 
   total = total - readings[readIndex];  
-  readings[readIndex] = RPM;  
+  readings[readIndex] = RPM;
   total = total + readings[readIndex]; 
-  readIndex = readIndex + 1; 
+  readIndex = readIndex + 1;
   
   if (readIndex >= numReadings){
-    readIndex = 0; 
+    readIndex = 0;
   }
   
-  average = total / numReadings;  
+  average = total / numReadings;
 
   Serial.print("Period: ");
   Serial.print(PeriodBetweenPulses);
@@ -88,8 +85,10 @@ void loop(){
   Serial.print("\tTachometer: ");
   Serial.println(average);
   
+//PWM para variavel RPM, 0 a 4k RPM.  
 analogWrite(9, map(RPM, 0, 4000, 0, 255));
 
+//Habilita a função de piscar os leds. 
 if(RPM>=3500){
   digitalWrite(10, HIGH);
   delay(100);
@@ -119,4 +118,4 @@ void Pulse_Event(){
     PulseCounter++;  
     PeriodSum = PeriodSum + PeriodBetweenPulses; 
   }
-}  
+}
