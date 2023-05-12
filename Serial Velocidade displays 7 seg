@@ -1,19 +1,16 @@
 // VSS pin 5
 // CLK Analog pin 5
 // DAT Analog pin 4
-//
-// Requires two Adafruit libraries:
-//   Adafruit_GFX
-//   Adafruit_LEDBackpack
+// iclicotecas necessarias: Adafruit_GFX e Adafruit_LEDBackpack
 
-#include "Adafruit_GFX.h"         // Adafruit Core graphics library
-#include "Adafruit_LEDBackpack.h" // Seven Segment display library
+#include "Adafruit_GFX.h"         
+#include "Adafruit_LEDBackpack.h"
 #include <SPI.h>
 #include <Wire.h>
 
 void setBrightness(uint8_t b, byte segment_address) {
-  if (b > 15) b = 15; //Max brightness on this display is 15.
-  if (b < 1) b = 1; // Brightness of 0 is too dim so make 1 the min.
+  if (b > 15) b = 15; //Brilho maximo para este display é 15. 
+  if (b < 1) b = 1;   // Brightness of 0 is too dim so make 1 the min.
   Wire.beginTransmission(segment_address);
   Wire.write(0xE0 | b); // write the brightness value to the hex address.
   Wire.endTransmission();  
