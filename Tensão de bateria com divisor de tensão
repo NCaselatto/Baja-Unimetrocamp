@@ -1,0 +1,117 @@
+//Bibliotecas
+#include <LiquidCrystal_I2C.h>
+#include "Wire.h"
+ 
+// Modulo I2C display no endereco 0x27, comunicaçao com os pinos A4=SDA e A5=SCL.
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+ 
+//Portas analogicas do voltimetro
+int CH1 = A2;
+int CH2 = A3;
+int CH3 = A0;
+int CH4 = A1;
+ 
+//Variaveis que armazenam o valor de tensão de cada canal.
+float VCH1;
+float VCH2;
+float VCH3;
+float VCH4;
+ 
+//Com auxilio de um multimetro, verifique a tensão fornecida na linha de 5V pela sua placa ARDUINO  e digite no lugar do valor atual.
+//ESSA ETAPA É FUNDAMELTAL PARA GARANTIR A PRECISÃO DO SEU VOLTIMETRO!
+#define VREF 4.69
+  
+// vetor de bytes dos caracteres que formam o logo M da Modulo Eletronica.
+byte SIMB1[8] = {B11100,B11110,B11111,B11101,B11100,B11100,B11100,B11100};
+byte SIMB2[8] = {B00000,B00000,B00000,B10000,B11100,B01111,B00111,B00001};
+byte SIMB3[8] = {B00000,B00000,B00000,B00001,B00111,B11110,B11100,B10000};
+byte SIMB4[8] = {B00111,B01111,B11111,B10111,B00111,B00111,B00111,B00111};
+byte SIMB5[8] = {B11100,B11100,B11100,B11100,B11100,B11100,B11100,B11100};
+byte SIMB6[8] = {B00000,B00001,B00011,B00011,B00001,B00000,B00000,B00000};
+byte SIMB7[8] = {B00000,B10000,B11000,B11000,B10000,B00000,B00000,B00000};
+byte SIMB8[8] = {B00111,B00111,B00111,B00111,B00111,B00111,B00111,B00111};
+ 
+ 
+void setup() {
+ //incializa o modulo LCD com backpack I2C
+  Wire.begin();
+  lcd.begin(20, 4);
+  lcd.backlight();
+   
+  //Cria os caracteres que formam o logo M da Modulo Eletronica.
+  lcd.createChar(1, SIMB1);
+  lcd.createChar(2, SIMB2);
+  lcd.createChar(3, SIMB3);
+  lcd.createChar(4, SIMB4);
+  lcd.createChar(5, SIMB5);
+  lcd.createChar(6, SIMB6);
+  lcd.createChar(7, SIMB7);
+  lcd.createChar(8, SIMB8);
+   
+ //Desenha o logo M da Modulo eletronica, caractere por caractere. 
+  byte Count = 1;
+  lcd.clear();
+   
+  for (byte y = 0; y < 2; y++) {
+    for (byte x = 0; x < 4; x++) {
+      lcd.setCursor(2+x, y);
+      lcd.write(Count);
+      Count++;  
+    }    
+  }
+   
+  lcd.setCursor(7, 0);
+  lcd.print("   MODULO");
+  lcd.setCursor(7, 1);
+  lcd.print(" ELETRONICA");
+  lcd.setCursor(1, 3);
+  lcd.print("VOLTIMETRO 4 CANAIS"); 
+  delay(2000);
+  lcd.clear();
+   
+  //Escreve no display a legenda de cada canal do Voltimetro.
+  lcd.setCursor(0, 0);
+  lcd.print("CH1 (0-5V)=");
+  lcd.setCursor(0, 1);
+  lcd.print("CH2 (0-5V)=");
+  lcd.setCursor(0, 2);
+  lcd.print("CH3 (0-25V)=");
+  lcd.setCursor(0, 3);
+  lcd.print("CH4 (0-25V)=");
+   
+}
+ 
+void loop() {
+   
+//Função que chama a leitura analogica do ADC. Uma chamada por canal.
+VCH1 = analogRead(CH1);
+VCH2 = analogRead(CH2);
+VCH3 = analogRead(CH3);
+VCH4 = analogRead(CH4);
+ 
+//Converte o valor ligo pela função analog Read(0 até 1023) em um valor de tensão. 
+VCH1 =(VCH1*(VREF/1023));
+VCH2 =(VCH2*(VREF/1023));
+VCH3 =(5*VCH3*(VREF/1023));
+VCH4 =(5*VCH4*(VREF/1023));
+ 
+//Escreve no display as tensões medidas por cada canal do voltimetro.
+lcd.setCursor(11, 0);
+lcd.print(VCH1,2);
+lcd.setCursor(11, 1);
+lcd.print(VCH2,2);
+ 
+lcd.setCursor(12, 2);
+lcd.print("    ");
+lcd.setCursor(12, 2);
+lcd.print(VCH3,2);
+ 
+lcd.setCursor(12, 3);
+lcd.print("    ");
+lcd.setCursor(12, 3);
+lcd.print(VCH4,2);
+ 
+//taxa de atualização entre tomada de medidas.
+delay(400);
+ 
+}
