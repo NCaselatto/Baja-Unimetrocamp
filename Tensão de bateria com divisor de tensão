@@ -1,33 +1,22 @@
-int CH3 = A0; //Set da porta analogica de leitura a variavel
-float VCH3; //Variavel de armazenamento do valor de tensão
+int CH3 = A0; //Set da porta analogica de leitura com a variavel
+float VCH3;   //Variavel de armazenamento do valor de tensão
 
 //Com auxilio de um multimetro, verifique a tensão fornecida na linha de 5V pela sua placa ARDUINO  e digite no lugar do valor atual.
 //ESSA ETAPA É FUNDAMELTAL PARA GARANTIR A PRECISÃO DO SEU VOLTIMETRO!
 #define VREF 4.69
  
-void setup() {   
-  lcd.print("CH3 (0-25V)=");
+void setup() { 
+pinMode(CH3, INPUT);
 }
  
 void loop() {
-//Função que chama a leitura analogica do ADC. Uma chamada por canal.
-VCH3 = analogRead(CH3);
+VCH3 = analogRead(CH3); //Leitura analogica 
  
-//Converte o valor ligo pela função analog Read(0 até 1023) em um valor de tensão. 
-VCH2 =(VCH2*(VREF/1023));   //0-5v
-VCH3 =(5*VCH3*(VREF/1023)); //0-25v
+VCH3 =(5*VCH3*(VREF/1023)); //Converte o valor ligo pela função analog Read(0 até 1023) em um valor de tensão. 
  
-//Escreve no display as tensões medidas por cada canal do voltimetro.
- 
-lcd.setCursor(12, 2);
-lcd.print("    ");
-lcd.setCursor(12, 2);
-lcd.print(VCH3,2);
-
-Serial.print("CH3 (0-25V)=");
-Serial.print(VCH3);
+Serial.print("CH3 (0-25V)="); //Escreve a tensão medida no monitor serial
+Serial.println(VCH3);
 
 //taxa de atualização entre tomada de medidas.
 delay(400);
- 
 }
