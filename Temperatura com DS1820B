@@ -15,10 +15,11 @@ void setup() {
 }
 
 void loop() {
-  //possivel alteração (analogWrite(ledPin, val / 4); // analogRead retorna valores de 0 a 1023, analogWrite recebe de 0 a 255) 
-  analogWrite(8, map(sensors.getTempCByIndex(0), 4, 30, 0, 255)); //mapeia a temperatura com o sinal pwm 
-  
+  //Escreve o valor de temperatura lido em ºC para PWM para barra de leds sequenciais.  
+  analogWrite(8, map(sensors.getTempCByIndex(0), 4, 30, 0, 255));
   sensors.requestTemperatures();
+
+//Escreve temperatura no monitor serial
   Serial.print("Temperatura: ");
   Serial.print(sensors.getTempCByIndex(0));
   Serial.println("ºC");
