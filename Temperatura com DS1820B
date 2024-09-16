@@ -1,7 +1,9 @@
+//Inclusao de bibliotecas
 #include <OneWire.h> 
 #include <DallasTemperature.h>
 
-#define DS18B20 3 //Seta o pino do arduino a ler o sensor
+//Seta o pino do arduino a ler o sensor
+#define DS18B20 3
 
 OneWire ourWire(DS18B20);
 DallasTemperature sensors(&ourWire);
@@ -13,7 +15,7 @@ void setup() {
 }
 
 void loop() {
-
+  //possivel alteração (analogWrite(ledPin, val / 4); // analogRead retorna valores de 0 a 1023, analogWrite recebe de 0 a 255) 
   analogWrite(8, map(sensors.getTempCByIndex(0), 4, 30, 0, 255)); //mapeia a temperatura com o sinal pwm 
   
   sensors.requestTemperatures();
