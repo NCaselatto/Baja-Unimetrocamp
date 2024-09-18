@@ -1,8 +1,8 @@
-int CH3 = A0; //Set da porta analogica de leitura com a variavel
-float VCH3;   //Variavel de armazenamento do valor de tensão
+//Definição dos pinos
+int CH3 = A0; //Pino de leitura
+float VCH3;   //Armazena o valor lido
 
-//Com auxilio de um multimetro, verifique a tensão fornecida na linha de 5V pela sua placa ARDUINO  e digite no lugar do valor atual.
-//ESSA ETAPA É FUNDAMELTAL PARA GARANTIR A PRECISÃO DO SEU VOLTIMETRO!
+//Com auxilio de um multimetro, verifique a tensão fornecida na linha de 5V pela placa ARDUINO  e digite no lugar do valor atual.
 #define VREF 4.69
  
 void setup() { 
